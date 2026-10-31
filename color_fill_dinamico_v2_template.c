@@ -1,5 +1,5 @@
-// Nome completo:
-// Matricula:
+// Nome completo: Maquiavel dos Santos Campos 
+// Matricula: 22653828
 #include <stdio.h>
 #include <stdlib.h>
 #include "log.h"
@@ -48,14 +48,44 @@ void colorir(int i, int j, int nova_cor, int cor_atual, Matriz matriz) {
 int** ler_arquivo(char *nome_arquivo, Matriz *matriz) {
 
     // Abre o arquivo para leitura com fopen e verifica se foi aberto com sucesso, caso contrário imprime uma mensagem de erro e encerra o programa com exit(1)
-
+    FILE *arquivo = (nome_arquivo, "r");
+    if(arquivo == NULL){
+        printf("Erro ao abrir arquivo '%s'\n", nome_arquivo);
+        exit(1);
+    }
+    
     // Lê as dimensões da matriz (linhas e colunas) do arquivo usando fscanf, verificando se a leitura foi bem-sucedida e se os valores são válidos (maiores que zero). Caso contrário, fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1).
-
+    int linhas, colunas;
+    fscanf(arquivo, "%d %d", &linhas. &colunas);
+    if(linhas>0 && colunas>0){
+        printf("As dimensões informadas, não forman uma matriz. m ou n <= 0");
+        exit(1);
+    }
     // Aloca dinamicamente a matriz de inteiros com malloc usando int** (vetor de ponteiros), verificando se a alocação foi bem-sucedida. Caso contrário, fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1).
-
+    int **I = (int**)malloc(linhas * sizeof(int*));
     // Aloca dinamicamente cada linha da matriz com malloc usando I[], verificando se a alocação foi bem-sucedida. Caso contrário, libera a memória já alocada (todas as linhas que foram alocadas e o vetor de ponteiros), fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1). 
-
+    for(int i = 0; i< linhas; i++){
+        I[i] = (int)malloc(colunas * sizeof(int));
+    }
     // Lê os valores da matriz do arquivo usando fscanf, verificando se a leitura foi bem-sucedida e se os valores são válidos (entre 0 e 8). Caso contrário, libera a memória alocada (todas as linhas e o vetor de ponteiros), fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1).
+    int matrizValida = 1;
+    for(int i =0; i< linhas && matrizValida; i++){
+        for(int j =0; j< colunas && matrizValida; j++){
+            fscanf(arquivo, "%d"; I[i][j]);
+            if(I[i][j] <0 || I[i][j] > 8){
+                matrizValida =  0;
+            }
+        }
+    }
+    if(matrizValida == 0){
+        for(int i = 0; i< linhas; i++){
+            free(I[i]);
+        }
+        free(I);
+        fclose(arquivo);
+        printf("Matriz com cores invalidas.\nEncerrando programa.\n");
+        exit(1); 
+    }
 
     // Fecha o arquivo e retorna o ponteiro para a matriz alocada.
     fclose(arquivo);
