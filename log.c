@@ -5,7 +5,7 @@
 
 int criar_arquivo_log(const char *nome_arquivo) {
     // cria arquivo de log vazio
-    FILE *arquivoLog = fopen("log.txt", "w");
+    FILE *arquivoLog = fopen(nome_arquivo, "w");
 
     // verifica se o arquivo foi criado com sucesso, caso contrário retorna 0
     if(arquivoLog == NULL){
@@ -26,7 +26,7 @@ int log_append(const char *nome_arquivo, int cor, int i, int j) {
     }
     
     // Verifica se a escrita no arquivo foi bem-sucedida, caso contrário fecha o arquivo eretorna 0. Utiliza fprintf() para escrever no arquivo.
-    if(fprintf(arquivoLog, "cor= %d i=%d j=%d", cor, i, j)<0){
+    if(fprintf(arquivoLog, "cor= %d i=%d j=%d\n", cor, i, j)<0){
         fclose(arquivoLog);
         return 0;
     }
