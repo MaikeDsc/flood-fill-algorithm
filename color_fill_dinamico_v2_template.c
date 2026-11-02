@@ -55,7 +55,7 @@ int verifica_validade(int i, int j, int cor_atual, Matriz matriz){
 void colorir(int i, int j, int nova_cor, int cor_atual, Matriz matriz) {
     // completar com a mesma lógica do TP1, prohibido usar uma lógica diferente da do TP1, apenas pode ser alterado a forma de percorrer a matriz, mas a lógica de colorir deve ser a mesma.
     printf("colorindo... \n");
-    if(nova_cor != cor_atual && verifica_validade(i,j,cor_atual,matriz)){
+    if(nova_cor != cor_atual){
                               //pintamos o ponto indicado para -1(cor que não existe na tabela)
         matriz.I[i][j] = -1;          //assim vamos fiferenciando a celula que queremos pintar de
                                 // outras celulas da mesma cor. Assim evitamos pintar qualquer celula que tenha a "cor_atual"
@@ -118,8 +118,9 @@ int** ler_arquivo(char *nome_arquivo, Matriz *matriz) {
     
     fscanf(arquivo, "%d %d", &matriz->linhas, &matriz->colunas);
     //printf("linhas: %d colunas: %d\n", matriz->linhas, matriz->colunas);
-    if(matriz->linhas<0 && matriz->colunas<0){
+    if(matriz->linhas<0 || matriz->colunas<0){
         printf("As dimensões informadas, não forman uma matriz. m ou n <= 0\n");
+        fclose(arquivo);
         exit(1);
     }
     // Aloca dinamicamente a matriz de inteiros com malloc usando int** (vetor de ponteiros), verificando se a alocação foi bem-sucedida. Caso contrário, fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1).
@@ -198,7 +199,7 @@ int main(int argc, char *argv[]) {
         printf("Informe a coordenada i (0 - %d):\n", matriz.linhas-1);
         scanf("%d",&i);
         while(i<0 || i>(matriz.linhas-1)){  //linha invalida
-            printf("i eh invalida\n");
+            printf("i eh invalida!\n");
             limpar_buffer_do_teclado();
             printf("Informe a cooredenada i(0 - %d):\n", matriz.linhas-1);
             scanf("%d",&i);
@@ -216,7 +217,7 @@ int main(int argc, char *argv[]) {
         cor_atual= matriz.I[i][j];
         // Verifica se a nova cor é diferente da cor atual na posição (i, j). Caso sejam iguais, imprime uma mensagem de erro "A nova cor deve ser diferente da cor na posição atual\n" e solicita novamente a entrada do usuário.
         while(nova_cor == cor_atual || nova_cor<-1 || nova_cor>8){  //coluna invalida
-            printf("A nova cor deve ser diferente da cor na posição atual e valida\n");
+            printf("A nova cor deve ser diferente da cor na posição atual e valida!\n");
             limpar_buffer_do_teclado();
             printf("Informe a cor (0 a 8) ou (-1 para sair):\n");
             scanf("%d",&nova_cor);
@@ -230,6 +231,9 @@ int main(int argc, char *argv[]) {
     }
     
     // Liberar memória da matriz antes de encerrar o programa
+    for(int i = 0; i< matriz.linhas; i++){
+        free(matriz.I[i]);
+    }
     free(matriz.I);
     return 0;
 }
