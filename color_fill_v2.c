@@ -1,12 +1,9 @@
 // Nome completo: Maquiavel dos Santos Campos 
-// Matricula: 22653828
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "log.h"
 
-//prohibido utilizar variáveis globais, exceto algum #define que seja necessário para o funcionamento do programa. 
-
-// não alterar esta struct
 typedef struct {
     int linhas;
     int colunas;
@@ -26,7 +23,6 @@ const char cores[][8] = {
     "\033[90m", // 8 - cinza
 };
 
-// Não alterar esta função
 void print_matrix(Matriz matriz) {
     printf("\n");
     for (int i = 0; i < matriz.linhas; i++) {
@@ -123,13 +119,10 @@ int** ler_arquivo(char *nome_arquivo, Matriz *matriz) {
         fclose(arquivo);
         exit(1);
     }
-    // Aloca dinamicamente a matriz de inteiros com malloc usando int** (vetor de ponteiros), verificando se a alocação foi bem-sucedida. Caso contrário, fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1).
     matriz->I = (int**)malloc(matriz->linhas * sizeof(int*));
-    // Aloca dinamicamente cada linha da matriz com malloc usando I[], verificando se a alocação foi bem-sucedida. Caso contrário, libera a memória já alocada (todas as linhas que foram alocadas e o vetor de ponteiros), fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1). 
     for(int i = 0; i< matriz->linhas; i++){
         matriz->I[i] = (int*)malloc(matriz->colunas * sizeof(int));
     }
-    // Lê os valores da matriz do arquivo usando fscanf, verificando se a leitura foi bem-sucedida e se os valores são válidos (entre 0 e 8). Caso contrário, libera a memória alocada (todas as linhas e o vetor de ponteiros), fecha o arquivo, imprime uma mensagem de erro e encerra o programa com exit(1).
     int matrizValida = 1;
     for(int i =0; i< matriz->linhas && matrizValida; i++){
         for(int j =0; j< matriz->colunas && matrizValida; j++){
@@ -149,12 +142,10 @@ int** ler_arquivo(char *nome_arquivo, Matriz *matriz) {
         exit(1); 
     }
 
-    // Fecha o arquivo e retorna o ponteiro para a matriz alocada.
     fclose(arquivo);
     return matriz->I;
 }
 
-// Prohibido alterar esta função utilizada para limpar_buffer_do_teclado.
 void limpar_buffer_do_teclado() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -165,7 +156,6 @@ int main(int argc, char *argv[]) {
     
     int i, j, nova_cor, cor_atual;
 
-    // Verifica se o número de argumentos passados para o programa é igual a 2 (o nome do programa e o nome do arquivo da matriz). Caso contrário, imprime uma mensagem de uso e retorna 1.
     if(argc !=2){
         printf("Argumentos passados incorretamentes\n");
         return 1;
@@ -183,11 +173,9 @@ int main(int argc, char *argv[]) {
     {
         print_matrix(matriz);
 
-        // Lógica de interação com o usuário para solicitar a nova cor, a posição (i, j) e chamar a função colorir. A cada iteração, imprime a matriz atualizada e solicita a entrada do usuário.
         printf("Informe a cor (0 a 8) ou (-1 para sair):\n");
         scanf("%d",&nova_cor);
         
-        // Verifica se a cor de entrada do usuário é válida (cor entre 0 e 8 ou -1 para sair). Caso a entrada seja inválida, imprime uma mensagem de erro "Entrada inválida.\n", limpa o buffer do teclado e solicita novamente a entrada do usuário.
         while(nova_cor<-1 || nova_cor>8){  //cor invalida
             printf("a cor informada eh invalida\n");
             limpar_buffer_do_teclado();
@@ -195,7 +183,6 @@ int main(int argc, char *argv[]) {
             scanf("%d",&nova_cor);
         }
         if(nova_cor==-1){break;}
-        // Solicita a coordenada i. Verifica se a coordenada é válida (posição dentro dos limites da matriz). Caso a entrada seja inválida, imprime uma mensagem de erro "Coordenada i inválida.\n", limpa o buffer do teclado e solicita novamente a entrada do usuário.
         printf("Informe a coordenada i (0 - %d):\n", matriz.linhas-1);
         scanf("%d",&i);
         while(i<0 || i>(matriz.linhas-1)){  //linha invalida
@@ -204,7 +191,6 @@ int main(int argc, char *argv[]) {
             printf("Informe a cooredenada i(0 - %d):\n", matriz.linhas-1);
             scanf("%d",&i);
         }
-        // Solicita a coordenada j. Verifica se a coordenada é válida (posição dentro dos limites da matriz). Caso a entrada seja inválida, imprime uma mensagem de erro "Coordenada j inválida.\n", limpa o buffer do teclado e solicita novamente a entrada do usuário.
         printf("Informe a coordenada j (0 - %d):\n", matriz.colunas-1);
         scanf("%d",&j);
         while(j<0 || j>(matriz.colunas-1)){  //coluna invalida
@@ -213,7 +199,6 @@ int main(int argc, char *argv[]) {
             printf("Informe a cooedenada j (0 - %d):\n", matriz.colunas-1);
             scanf("%d",&j);
         }
-        // Após colorir a matriz, chama a função log_append para registrar a operação no arquivo de log. Caso não seja possível escrever no arquivo, imprime uma mensagem de aviso.
         cor_atual= matriz.I[i][j];
         // Verifica se a nova cor é diferente da cor atual na posição (i, j). Caso sejam iguais, imprime uma mensagem de erro "A nova cor deve ser diferente da cor na posição atual\n" e solicita novamente a entrada do usuário.
         while(nova_cor == cor_atual || nova_cor<-1 || nova_cor>8){  //coluna invalida
@@ -229,7 +214,7 @@ int main(int argc, char *argv[]) {
             fprintf(stderr, "Aviso: nao foi possivel escrever o color_fill_log.txt\n");
         }
     }
-    
+
     // Liberar memória da matriz antes de encerrar o programa
     for(int i = 0; i< matriz.linhas; i++){
         free(matriz.I[i]);
